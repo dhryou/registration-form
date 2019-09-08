@@ -109,7 +109,7 @@ vim: syntax=HTML
 	    case "hotmail.com": document.reg_fo.email_posterior.value = "hotmail.com"; document.reg_fo.email_posterior.readOnly = true; break;
 	    case "naver.com": document.reg_fo.email_posterior.value = "naver.com"; document.reg_fo.email_posterior.readOnly = true; break;
 	    case "daum.net": document.reg_fo.email_posterior.value = "daum.net"; document.reg_fo.email_posterior.readOnly = true; break;
-	    case "직접 입력": document.reg_fo.email_posterior.readOnly = false; break;
+	    case "Custom": document.reg_fo.email_posterior.readOnly = false; break;
 	}
     }
     function mnd_insert(){
@@ -216,7 +216,7 @@ vim: syntax=HTML
 		  <option value="hotmail.com" onclick="email_domain(this.value)">hotmail.com</option>
 		  <option value="naver.com" onclick="email_domain(this.value)">naver.com</option>
 		  <option value="daum.net" onclick="email_domain(this.value)">daum.net</option>
-		  <option value="직접 입력" SELECTED onclick="email_domain(this.value)">Custom</option>
+		  <option value="Custom" SELECTED onclick="email_domain(this.value)">Custom</option>
 		</select><br>
 		&nbsp;&nbsp;&nbsp;&nbsp;Use Narasarang email
 		<input type="radio" name="mnd_email" value="yes" onclick="mnd_insert()"> Yes &nbsp;&nbsp;
