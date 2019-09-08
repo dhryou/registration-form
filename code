@@ -1,0 +1,246 @@
+vim: syntax=HTML
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title> Registration </title>
+  <script language="javascript">
+    function ssn_check(ssn1, ssn2){
+	ssn = ssn1 + ssn2;
+	ssnarr = ssn.split(""); ssnarr[13] = 0;
+	var checkvalue = 1;		
+	for(i=0; i<12; i++){
+		checkvalue++;
+		if(checkvalue == 10) checkvalue = 2;
+		ssnarr[i] = ssnarr[i] * checkvalue;
+		ssnarr[13] += ssnarr[i];
+	}
+	if ( (11-(ssnarr[13]%11))%10 == ssnarr[12] ) {document.reg_fo.ssn_verify.value = "Verified"; window.alert("Correct Korean SSN.");}
+	else{
+		window.alert("Wrong Korean SSN. Please enter again.");
+		document.reg_fo.ssn_anterior.value = "";
+		document.reg_fo.ssn_posterior.value = "";
+		ssn1 = null; ssn2= null; ssn = null; ssnarr = null;
+		document.reg_fo.ssn_verify.value = "Wrong";
+	}
+    }
+    function id_check(origid){
+	var asciinum = 0;
+	for(i=0; i<origid.length; i++){
+	    asciinum = origid.charCodeAt(i);
+	    if( (asciinum >= 32 && asciinum <= 47) || (asciinum >= 58 && asciinum <= 64) ||
+		(asciinum >= 91 && asciinum <= 96) || (asciinum >= 123 && asciinum <= 126) )
+	    {
+		alert("You are not allowed to create an ID with the following special characters: (space)!Y#$%&'()*+,-./:;<=>?@[\]^_`{|}~)");
+		document.reg_fo.id.value = "";
+		document.reg_fo.id.focus();
+		return;
+	    }
+	}
+	document.reg_fo.idcheck.value = "Verified";
+    }
+    function uprcase_check(pw){
+	var asciinum = 0;
+	for(i=0; i<pw.length; i++){
+	    asciinum = pw.charCodeAt(i);
+	    if (asciinum >= 65 && asciinum <= 90) return 1;
+	}
+	return 0;
+    }
+    function lwrcase_check(pw){
+	var asciinum = 0;
+	for(i=0; i<pw.length; i++){
+	    asciinum = pw.charCodeAt(i);
+	    if (asciinum >= 97 && asciinum <= 122) return 1;
+	}
+	return 0;
+    }
+    function spcchar_check(pw){
+	// (space)!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+	var asciinum = 0;
+	for(i=0; i<pw.length; i++){
+	    asciinum = pw.charCodeAt(i);
+	    if( (asciinum >= 32 && asciinum <= 47) || (asciinum >= 58 && asciinum <= 64) ||
+		(asciinum >= 91 && asciinum <= 96) || (asciinum >= 123 && asciinum <= 126) ) return 1;
+	}
+	return 0;
+    }
+    function num_check(pw){
+	var asciinum = 0;
+	for(i=0; i<pw.length; i++){
+	    asciinum = pw.charCodeAt(i);
+	    if (asciinum >= 48 && asciinum <= 57) return 1;
+	}
+	return 0;
+    }
+    function overlap_check(pw, id){
+	var segment = "";
+	for(i=0; i<pw.length; i++){
+	    if(pw[i] == id[0]){
+		segment = pw.substr(i, id.length);
+		var checkval = id.localeCompare(segment);
+		if (checkval == false) return 0;
+	    }
+	}
+	return 1;
+    }
+    function pw_check1(origpw, origid){
+	pwcount = 0;
+	var uprcase = uprcase_check(origpw);
+	var lwrcase = lwrcase_check(origpw);
+	var spcchar = spcchar_check(origpw);
+	var num = num_check(origpw);
+	var overlap = overlap_check(origpw, origid);
+	pwcount = uprcase + lwrcase + spcchar + num + overlap;
+	if (uprcase == 0) alert("Your password must contain at least one upper case letter.");
+	if (lwrcase == 0) alert("Your password must contain at least one lower case letter.");
+	if (spcchar == 0) alert("Your password must contain at least one special character.");
+	if (num == 0) alert("Your password must contain at least one number.");
+	if (overlap == 0) alert("Your password cannot contain your ID.");
+	(pwcount == 5) ? alert("Good") : alert("Password must contain the following:\n- At least one upper case letter\n- At least one lower case letter\n- At least one special character\n- At least one number\n- ID cannot be in password");
+    }
+    function pw_check2(checkpw, origpw){
+	var checkval = checkpw.localeCompare(origpw);
+	checkval == 0 ? (document.getElementById("pwverify").value = "Passwords are identical.", document.getElementById("pwverify").style.color = "green") :
+	(document.getElementById("pwverify").value = "Passwords are NOT identical.", document.getElementById("pwverify").style.color = "red", document.reg_fo.pwcheck.value="")
+    }
+    function email_domain(domain){
+	switch(domain){
+	    case "gmail.com": document.reg_fo.email_posterior.value = "gmail.com"; document.reg_fo.email_posterior.readOnly = true; break;
+	    case "hotmail.com": document.reg_fo.email_posterior.value = "hotmail.com"; document.reg_fo.email_posterior.readOnly = true; break;
+	    case "naver.com": document.reg_fo.email_posterior.value = "naver.com"; document.reg_fo.email_posterior.readOnly = true; break;
+	    case "daum.net": document.reg_fo.email_posterior.value = "daum.net"; document.reg_fo.email_posterior.readOnly = true; break;
+	    case "직접 입력": document.reg_fo.email_posterior.readOnly = false; break;
+	}
+    }
+    function mnd_insert(){
+	document.reg_fo.email_anterior.value = "";
+	document.reg_fo.email_posterior.value = "";
+	document.getElementById("email_domain").value = "Narasarang";
+	document.reg_fo.email_anterior.readOnly = true;
+	document.reg_fo.email_posterior.readOnly = true;
+	narasarang.style.display = "inline";
+	narasarang.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='mnd_anterior' size=14 maxlength=14> @ narasarang.or.kr";
+    }
+    function mnd_remove(){
+	document.reg_fo.email_anterior.readOnly = false;
+	document.reg_fo.email_posterior.readOnly = false;
+	document.getElementById("email_domain").value = "Custom";
+	narasarang.style.display = "none";
+    }
+    function captcha(){
+	document.getElementById("captchacheck").value = "Verified";
+    }
+    function final_check(){
+	fullemail = "";
+	if (narasarang.style.display != "none") fullemail = document.reg_fo.mnd_anterior.value + "@narasarang.or.kr";
+	else fullemail = document.reg_fo.email_anterior.value + "@" + document.reg_fo.email_posterior.value;
+	alert(fullemail);
+    }
+  </script>
+</head>
+
+<body>
+  <H2> Create Account </H2>
+  <font color="red"> * The following fields must be completed.</font>
+<form name="reg_fo">
+  <table width="65%" height=300 border=1>
+	<col width="20%" bgcolor="F0F8FF">
+	<col width="80%">
+	<tr height = 40>
+	  <th align=left valign=center>&nbsp;&nbsp;Name*</th>
+	  <th align=left>&nbsp;&nbsp;&nbsp;&nbsp;
+	  <input type="text" size="15" maxlength="14" name="name"> </th>
+	</tr>
+	<tr height = 40>
+	  <th align=left valign=center>&nbsp;&nbsp;Korean SSN*</th>
+	  <th align=left>&nbsp;&nbsp;&nbsp;&nbsp;
+	  <input type="text" size="6" maxlength="7" name="ssn_anterior" onkeyup="if (this.value.length >= 6) {this.blur(); this.form.ssn_posterior.focus();}">
+	   - <input type="text" size="7" maxlength="7" name="ssn_posterior"> &nbsp&nbsp
+	  <input type="button" name="ssn_verify" value="Check" onclick="ssn_check(this.form.ssn_anterior.value, this.form.ssn_posterior.value)">
+	  </th>
+	</tr>
+	<tr height = 40>
+	  <th align=left valign=center>&nbsp;&nbsp;Nickname</th>
+	  <th align=left>&nbsp;&nbsp;&nbsp;&nbsp;
+	    <input type="text" size="12" maxlength="11" name="nickname">
+	  </th>
+	</tr>
+	<tr height = 40>
+	  <th align=left valign=center>&nbsp;&nbsp;ID*</th>
+	  <th align=left>&nbsp;&nbsp;&nbsp;&nbsp;
+	    <input type="text" size="12" maxlength="11" name="id">&nbsp;
+		<input type="button" name="idcheck" value="Duplicate Check" onclick="id_check(this.form.id.value)">
+	  </th>
+	</tr>
+	<tr height = 40>
+	  <th align=left valign=center>&nbsp;&nbsp;Password*</th>
+	  <th align=left>&nbsp;&nbsp;&nbsp;&nbsp;
+	  <input type="Password" size="21" maxlength="20" name="pw" onblur="pw_check1(this.value, this.form.id.value)">
+	  &nbsp;&nbsp;&nbsp;
+	  </th>
+	</tr>
+	<tr height = 40>
+	  <th align=left valign=center>&nbsp;&nbsp;Password Check*</th>
+	  <th align=left>&nbsp;&nbsp;&nbsp;&nbsp;
+	  <input type="Password" size="21" maxlength="20" name="pwcheck" onblur="pw_check2(this.value, this.form.pw.value)">
+	  &nbsp;&nbsp;&nbsp;
+	  <input type="text" id="pwverify" readonly value="" style="border:none" size=32>
+	  </th>
+	</tr>
+	<tr height = 80>
+	  <th align=left valign=center>&nbsp;&nbsp;Security Question<br>&nbsp;&nbsp;Question/Answer*</th>
+	  <th align=left>
+	    &nbsp;&nbsp;&nbsp;&nbsp;Question&nbsp;&nbsp;
+	    <select name="security_question">
+		  <option SELECTED>Please select</option>
+		  <option>Who was your childhood best friend?</option>
+		  <option>In what city did your parents meet?</option>
+		  <option>What is the name of your first kiss?</option>
+		  <option>What is the name of your first pet?</option>
+		  <option>What is your mother's maiden name?</option>
+		</select><br>
+	    &nbsp;&nbsp;&nbsp;&nbsp;Answer&nbsp;&nbsp;
+		<input type="text" size="20" maxlength="20" name="security_answer">
+	  </th>
+	</tr>
+	<tr height = 80>
+	  <th align=left valign=center>&nbsp;&nbsp;Email*</th>
+	  <th align=left>
+	    &nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="text" size="20" maxlength="20" name="email_anterior">
+		&nbsp;@&nbsp;
+		<input type="text" size="20" maxlength="20" name="email_posterior"> &nbsp;&nbsp;
+		<select id="email_domain">
+		  <option value="나라사랑" hidden>Narasarang</option>
+		  <option value="gmail.com" onclick="email_domain(this.value)">gmail.com</option>
+		  <option value="hotmail.com" onclick="email_domain(this.value)">hotmail.com</option>
+		  <option value="naver.com" onclick="email_domain(this.value)">naver.com</option>
+		  <option value="daum.net" onclick="email_domain(this.value)">daum.net</option>
+		  <option value="직접 입력" SELECTED onclick="email_domain(this.value)">Custom</option>
+		</select><br>
+		&nbsp;&nbsp;&nbsp;&nbsp;Use Narasarang email
+		<input type="radio" name="mnd_email" value="yes" onclick="mnd_insert()"> Yes &nbsp;&nbsp;
+		<input type="radio" name="mnd_email" value="no" onclick="mnd_remove()"> No <br>
+		<div id="narasarang"> </div>
+	  </th>
+	</tr>
+	<tr height = 80>
+	  <th align=left valign=center>&nbsp;&nbsp;Verify Human*</th>
+	  <th align=left>
+	    &nbsp;&nbsp;&nbsp;&nbsp;
+		<img src="images\captcha1.png" width=225 height=60 border=1 id="captcha" alt="Captcha" usemap="#captcha_check">
+		<map name="captcha_check">
+		  <area shape="rect" coords="12,20,32,39" onclick="captcha()">
+		  &nbsp;&nbsp;&nbsp;
+		  <input type="text" id="captchacheck" readonly value="" style="border:none" size=4>
+		</map>
+	  </th>
+	</tr>
+  </table>
+  <br><br>
+  <input type="button" name="submit_btn" value="Register" onclick="final_check()">
+  <input type="reset" name="reset" value="Reset">
+</form>
+
+</body>
+</html>
