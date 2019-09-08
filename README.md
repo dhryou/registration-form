@@ -1,4 +1,4 @@
-# Registration Form
+# Basic Registration Form
 
 ## About
 Simple registration form used to input different information and send as cookies (not included in the following code).
